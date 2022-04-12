@@ -1,4 +1,6 @@
 {
   "solidity.packageDefaultDependenciesContractsDirectory": "",
-  "solidity.packageDefaultDependenciesDirectory": "./smart-contracts/node_modules"
+  "solidity.packageDefaultDependenciesDirectory": "./smart-contracts/node_modules",
+  "workbench.colorTheme": "Activate UMBRA protocol",
+  "editor.formatOnSave": true
 }
