@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  stake-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: v8-web
+    restart: always
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+    ports:
+      - "${NEXT_PUBLIC_APP_PORT}:${NEXT_PUBLIC_APP_PORT}"
+    network_mode: bridge
+    environment:
+      VIRTUAL_HOST: ${NEXT_PUBLIC_DOMAIN}
+      LETSENCRYPT_HOST: ${NEXT_PUBLIC_DOMAIN}
+      LETSENCRYPT_EMAIL: ${NEXT_PUBLIC_ADMIN_EMAIL}
+      VIRTUAL_PORT: ${NEXT_PUBLIC_APP_PORT}

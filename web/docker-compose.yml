@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  stake-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stacking-web
+    restart: always
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+    ports:
+      - "${NEXT_PUBLIC_APP_PORT}:${NEXT_PUBLIC_APP_PORT}"
+    networks:
+      - stake-network
+
+networks:
+  stake-network:
+    external: true

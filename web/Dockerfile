@@ -1,0 +1,23 @@
+FROM node:14.17.0-slim
+
+RUN apt-get update
+
+RUN apt-get install python -y
+RUN apt-get install make -y
+RUN apt-get install g++ -y
+RUN apt-get install git -y
+RUN apt-get install libusb-1.0-0-dev -y
+RUN apt-get install libudev-dev -y
+
+WORKDIR /usr/src/app
+
+# install and cache app dependencies
+COPY package.json /usr/src/app
+COPY yarn.lock /usr/src/app
+
+RUN yarn install
+ 
+
+EXPOSE 3003
+
+CMD ["npm", "run", "dev"]
