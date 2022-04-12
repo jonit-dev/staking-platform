@@ -15,4 +15,6 @@ export const Page: React.FC<IProps> = ({ children }) => {
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+  height: 100%;
+`;

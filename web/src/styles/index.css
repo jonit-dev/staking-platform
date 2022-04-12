@@ -1,0 +1,9 @@
+html {
+  overflow-y: auto;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
