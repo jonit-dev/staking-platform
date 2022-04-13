@@ -3,8 +3,7 @@ import { Web3Status } from "@store/web3.store";
 import { showError } from "./ToastHelpers";
 
 export const disconnectWallet = async () => {
-  localStorage.clear();
-  window.location.reload();
+  web3Store.setStatus(Web3Status.Disconnected);
 };
 
 export const isMetamaskConnected = () => {

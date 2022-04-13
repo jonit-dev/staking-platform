@@ -12,14 +12,14 @@ export enum Web3Status {
 export class Web3Store {
   public accounts: string[] | null = null;
   public currentAccount: string | null = null;
-  public status: Web3Status = Web3Status.Loading;
+  public status: Web3Status = Web3Status.Disconnected;
 
   constructor(public root: RootStore) {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: this.constructor.name,
-      properties: ["status"],
+      properties: ["status", "currentAccount"],
       storage: isBrowser() ? window.localStorage : undefined,
     });
   }
@@ -32,7 +32,17 @@ export class Web3Store {
     this.currentAccount = account;
   };
 
+  public clear() {
+    this.accounts = null;
+    this.currentAccount = null;
+    this.status = Web3Status.Disconnected;
+  }
+
   public setStatus(status: Web3Status) {
+    if (status === Web3Status.Disconnected) {
+      this.clear();
+    }
+
     this.status = status;
   }
 }
