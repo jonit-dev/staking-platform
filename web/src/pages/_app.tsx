@@ -1,19 +1,14 @@
 import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import web3 from "web3";
-import Web3Provider from "web3-react";
+import { Web3Wrapper } from "web3/Web3Wrapper";
+
 import { ScriptLoader } from "../components/ScriptLoader";
 import "../styles/index.css";
-import { connectors } from "../web3/connectors";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Web3Provider
-      connectors={connectors}
-      libraryName={"web3.js"}
-      web3Api={web3}
-    >
+    <>
       <ScriptLoader />
       <ToastContainer
         position="bottom-left"
@@ -22,11 +17,16 @@ function MyApp({ Component, pageProps }: AppProps) {
         closeOnClick={true}
         pauseOnHover={true}
         draggable={true}
+        style={{
+          width: "auto",
+        }}
         theme="dark"
       />
 
-      <Component {...pageProps} />
-    </Web3Provider>
+      <Web3Wrapper>
+        <Component {...pageProps} />
+      </Web3Wrapper>
+    </>
   );
 }
 

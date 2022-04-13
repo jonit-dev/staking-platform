@@ -1,55 +1,29 @@
+import { connectToWallet, disconnectWallet } from "@libs/Web3Helpers";
 import { observer } from "mobx-react";
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useWeb3Context } from "web3-react";
-import { showError } from "../libs/ToastHelpers";
 import { web3Store } from "../store/root.store";
 import { Web3Status } from "../store/web3.store";
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
+import { Loading } from "./Loading";
+import { NoSSR } from "./other/NoSSR";
 
-interface IProps {}
-
-export const Navbar: React.FC<IProps> = observer((props) => {
-  const context = useWeb3Context();
-
-  useEffect(() => {
-    console.log(context);
-
-    if (context?.account && context?.active) {
-      console.log(context);
-      web3Store.setAccount(context.account);
-      web3Store.setStatus(Web3Status.Connected);
-    }
-  }, [context]);
-
+export const Navbar: React.FC = observer(() => {
   const onConnectWallet = async () => {
-    try {
-      await context.setConnector("MetaMask", {
-        suppressAndThrowErrors: true,
-      });
-      web3Store.setStatus(Web3Status.Loading);
-    } catch (error: any) {
-      switch (error.code) {
-        case "ETHEREUM_ACCESS_DENIED":
-          showError("Please accept your Metamask request to proceed");
-          break;
-        default:
-          showError("Oops! Failed to connect to your Metamask wallet");
-          break;
-      }
-
-      context.unsetConnector();
-    }
+    await connectToWallet();
   };
 
-  const onDisconnectWallet = () => {
-    context.unsetConnector();
+  const onDisconnectWallet = async () => {
+    await disconnectWallet();
   };
 
   const onRenderWalletButton = () => {
-    switch (web3Store.currentStatus) {
-      case Web3Status.NotLoaded:
+    switch (web3Store.status) {
+      case Web3Status.Loading:
+        return <Loading />;
+
+      case Web3Status.Disconnected:
         return <Login onClick={onConnectWallet} />;
       case Web3Status.Connected:
         return <Logout onClick={onDisconnectWallet} />;
@@ -95,7 +69,9 @@ export const Navbar: React.FC<IProps> = observer((props) => {
             </div>
           </div>
           <div className="navbar-end">
-            <div className="navbar-item">{onRenderWalletButton()}</div>
+            <NoSSR>
+              <div className="navbar-item">{onRenderWalletButton()}</div>
+            </NoSSR>
           </div>
         </div>
       </nav>

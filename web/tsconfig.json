@@ -23,6 +23,7 @@
       "@pages/*": ["pages/*"],
       "@store/*": ["store/*"]
     },
+    "useUnknownInCatchVariables": false,
     "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/_document.js"],
