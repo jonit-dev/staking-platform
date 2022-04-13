@@ -1,4 +1,4 @@
-import { connectToWallet, disconnectWallet } from "@libs/Web3Helpers";
+import { connectToWallet, disconnectWallet } from "@libs/web3/walletHelpers";
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";

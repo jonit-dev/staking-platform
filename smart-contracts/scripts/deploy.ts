@@ -2,7 +2,8 @@
 
 import { Contract, utils } from "ethers";
 import fs from "fs";
-import { ethers } from "hardhat";
+import hre, { ethers } from "hardhat";
+
 import path from "path";
 import { deployContract } from "../helpers/deployHelpers";
 import { DAIToken, DappToken, TokenFarm } from "../typechain";
@@ -72,8 +73,13 @@ function generateABI(abiOutputs: IABIOutput[]) {
     const artifact = fs.readFileSync(artifactPath);
 
     const artifactData = JSON.parse(artifact.toString());
-
+    const networkName = hre.network.name;
+    const chainId = hre.network.config.chainId;
     artifactData.address = output.contract.address;
+    artifactData.network = {
+      name: networkName,
+      chainId: chainId,
+    };
 
     fs.writeFileSync(artifactPath, JSON.stringify(artifactData));
 

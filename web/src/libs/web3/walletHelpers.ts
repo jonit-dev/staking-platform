@@ -1,24 +1,14 @@
-import { web3Networks } from "@constants/web3";
-import { web3Store } from "@store/root.store";
+import { showError } from "@libs/ToastHelpers";
+import { contractsStore, web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
+import { toJS } from "mobx";
 import Web3 from "web3";
 import { provider } from "web3-core";
-import { showError } from "./ToastHelpers";
+import { getContract } from "./contractHelpers";
+import { getNetworkId, getNetworkName } from "./networkHelpers";
 
 export const disconnectWallet = async () => {
   web3Store.setStatus(Web3Status.Disconnected);
-};
-
-export const getNetworkName = async () => {
-  const { web3 } = window;
-  const networkId = await getNetworkId();
-  return web3Networks[networkId] || (await web3.eth.net.getNetworkType());
-};
-
-export const getNetworkId = async () => {
-  const { web3 } = window;
-
-  return await web3.eth.net.getId();
 };
 
 export const isMetamaskConnected = () => {
@@ -45,6 +35,21 @@ export const isMetamaskInstalled = () => {
     return true;
   }
   return false;
+};
+
+const loadContracts = (name: string) => {
+  try {
+    const contract = getContract(name);
+
+    if (!contract) {
+      throw new Error(`Failed to load contract ${name}`);
+    }
+
+    contractsStore.setContract(name, contract);
+  } catch (error) {
+    console.error(error);
+    showError(error.message);
+  }
 };
 
 export const connectToWallet = async () => {
@@ -75,12 +80,19 @@ export const connectToWallet = async () => {
       return;
     }
 
+    // once everything is connected...
+
     web3Store.setAccounts(accounts);
     web3Store.setCurrentAccount(ethereum.selectedAddress || accounts[0]);
     web3Store.setStatus(Web3Status.Connected);
     const networkId = await getNetworkId();
     const networkName = await getNetworkName();
     web3Store.setNetwork(networkId, networkName);
+
+    loadContracts("DAIToken");
+    loadContracts("DappToken");
+    loadContracts("TokenFarm");
+    console.log(toJS(contractsStore));
   } catch (error) {
     web3Store.setStatus(Web3Status.Disconnected);
     console.error(error);
@@ -92,14 +104,4 @@ export const connectToWallet = async () => {
 
     showError(error.message);
   }
-};
-
-const getContract = (name: string) => {
-  const { web3 } = window;
-
-  const contract = require(`../contracts/${name}.json`);
-
-  const { abi, address } = contract;
-
-  return new web3.eth.Contract(abi, address);
 };

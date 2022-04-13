@@ -3,5 +3,5 @@ interface IWeb3Networks {
 }
 
 export const web3Networks: IWeb3Networks = {
-  5777: "Ganache",
+  5777: "localhost",
 };
