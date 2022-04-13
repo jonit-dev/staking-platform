@@ -9,17 +9,23 @@ export enum Web3Status {
   Connected = "Connected",
 }
 
+export interface INetwork {
+  id: number;
+  name: string;
+}
+
 export class Web3Store {
   public accounts: string[] | null = null;
   public currentAccount: string | null = null;
   public status: Web3Status = Web3Status.Disconnected;
+  public network: INetwork | null = null;
 
   constructor(public root: RootStore) {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: this.constructor.name,
-      properties: ["status", "currentAccount"],
+      properties: ["status", "currentAccount", "network"],
       storage: isBrowser() ? window.localStorage : undefined,
     });
   }
@@ -44,5 +50,12 @@ export class Web3Store {
     }
 
     this.status = status;
+  }
+
+  public setNetwork(id: number, name: string) {
+    this.network = {
+      id,
+      name,
+    };
   }
 }

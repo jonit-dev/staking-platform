@@ -1,4 +1,0 @@
-web3 react with ganache support
-mobx mobx persist
-axios
-dockerize

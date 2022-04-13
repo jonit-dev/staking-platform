@@ -1,3 +1,4 @@
+import { web3Networks } from "@constants/web3";
 import { web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
 import Web3 from "web3";
@@ -6,6 +7,18 @@ import { showError } from "./ToastHelpers";
 
 export const disconnectWallet = async () => {
   web3Store.setStatus(Web3Status.Disconnected);
+};
+
+export const getNetworkName = async () => {
+  const { web3 } = window;
+  const networkId = await getNetworkId();
+  return web3Networks[networkId] || (await web3.eth.net.getNetworkType());
+};
+
+export const getNetworkId = async () => {
+  const { web3 } = window;
+
+  return await web3.eth.net.getId();
 };
 
 export const isMetamaskConnected = () => {
@@ -65,6 +78,9 @@ export const connectToWallet = async () => {
     web3Store.setAccounts(accounts);
     web3Store.setCurrentAccount(ethereum.selectedAddress || accounts[0]);
     web3Store.setStatus(Web3Status.Connected);
+    const networkId = await getNetworkId();
+    const networkName = await getNetworkName();
+    web3Store.setNetwork(networkId, networkName);
   } catch (error) {
     web3Store.setStatus(Web3Status.Disconnected);
     console.error(error);
@@ -76,4 +92,14 @@ export const connectToWallet = async () => {
 
     showError(error.message);
   }
+};
+
+const getContract = (name: string) => {
+  const { web3 } = window;
+
+  const contract = require(`../contracts/${name}.json`);
+
+  const { abi, address } = contract;
+
+  return new web3.eth.Contract(abi, address);
 };

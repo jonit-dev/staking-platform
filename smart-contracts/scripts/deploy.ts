@@ -3,6 +3,7 @@
 import { Contract, utils } from "ethers";
 import fs from "fs";
 import { ethers } from "hardhat";
+import path from "path";
 import { deployContract } from "../helpers/deployHelpers";
 import { DAIToken, DappToken, TokenFarm } from "../typechain";
 
@@ -63,14 +64,20 @@ main().catch((error) => {
 
 function generateABI(abiOutputs: IABIOutput[]) {
   for (const output of abiOutputs) {
-    const data = {
-      address: output.contract.address,
-      abi: output.contract.interface.format("json"),
-    };
+    const artifactPath = path.resolve(
+      __dirname,
+      `../artifacts/contracts/${output.name}.sol/${output.name}.json`
+    );
 
-    fs.writeFileSync(`./ABI/${output.name}.json`, JSON.stringify(data));
+    const artifact = fs.readFileSync(artifactPath);
 
-    console.log(`Token ABI output located at ./ABI/${output.name}.json`);
+    const artifactData = JSON.parse(artifact.toString());
+
+    artifactData.address = output.contract.address;
+
+    fs.writeFileSync(artifactPath, JSON.stringify(artifactData));
+
+    console.log("Saving Contract data on file: ", artifactPath);
   }
 }
 
