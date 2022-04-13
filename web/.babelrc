@@ -1,6 +1,7 @@
 {
-  "presets": ["next/babel"],
+  "presets": ["next/babel", "@babel/preset-react", "@babel/preset-env"],
   "plugins": [
+    "@emotion",
     ["babel-plugin-styled-components", { "ssr": true, "displayName": true }]
   ]
 }
