@@ -1,5 +1,6 @@
 import { web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
+import Web3 from "web3";
 import { showError } from "./ToastHelpers";
 
 export const disconnectWallet = async () => {
@@ -41,6 +42,10 @@ export const connectToWallet = async () => {
       return;
     }
 
+    if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider);
+    }
+
     web3Store.setStatus(Web3Status.Loading);
 
     const accounts = (await ethereum.request({
@@ -53,8 +58,6 @@ export const connectToWallet = async () => {
       );
       return;
     }
-
-    console.log(accounts);
 
     web3Store.setAccounts(accounts);
     web3Store.setCurrentAccount(ethereum.selectedAddress || accounts[0]);

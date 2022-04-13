@@ -11,6 +11,7 @@
     "env:switch:prod": "./environment/env-switch.sh prod"
   },
   "dependencies": {
+    "@types/web3": "^1.2.2",
     "mobx": "^6.5.0",
     "mobx-persist-store": "^1.0.6",
     "mobx-react": "^7.3.0",
