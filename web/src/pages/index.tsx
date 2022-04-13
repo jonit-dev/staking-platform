@@ -4,7 +4,7 @@ import { Page } from "../components/Page";
 const Home: NextPage = () => {
   return (
     <Page>
-      <h1>s</h1>
+      <p>Staking platform here...</p>
     </Page>
   );
 };

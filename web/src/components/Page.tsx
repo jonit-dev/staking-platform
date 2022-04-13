@@ -8,13 +8,14 @@ interface IProps {
 
 export const Page: React.FC<IProps> = ({ children }) => {
   return (
-    <Container>
+    <>
       <Navbar />
-      {children}
-    </Container>
+      <Container className="container">{children}</Container>
+    </>
   );
 };
 
 const Container = styled.div`
+  padding: 2rem;
   height: 100%;
 `;
