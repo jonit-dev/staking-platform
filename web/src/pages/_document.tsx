@@ -10,23 +10,6 @@ import { ReactElement } from "react";
 import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
-  render(): ReactElement {
-    return (
-      <Html lang="en">
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://jenil.github.io/bulmaswatch/cyborg/bulmaswatch.min.css"
-          />
-        </Head>
-        <body>
-          <Main />
-          <NextScript />
-        </body>
-      </Html>
-    );
-  }
-
   static async getInitialProps(
     ctx: DocumentContext
   ): Promise<DocumentInitialProps> {
@@ -54,5 +37,22 @@ export default class MyDocument extends Document {
     } finally {
       sheet.seal();
     }
+  }
+
+  render(): ReactElement {
+    return (
+      <Html lang="en">
+        <Head>
+          <link
+            rel="stylesheet"
+            href="https://jenil.github.io/bulmaswatch/cyborg/bulmaswatch.min.css"
+          />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
   }
 }

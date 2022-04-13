@@ -1,6 +1,6 @@
+import { BaseButton } from "@components/BaseButton";
 import React from "react";
 import styled from "styled-components";
-import { BaseButton } from "../BaseButton";
 
 interface IProps {
   onClick: () => void;

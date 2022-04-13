@@ -15,8 +15,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       web3Api={web3}
     >
       <ScriptLoader />
-
-      <Component {...pageProps} />
       <ToastContainer
         position="bottom-left"
         autoClose={5000}
@@ -26,6 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         draggable={true}
         theme="dark"
       />
+
+      <Component {...pageProps} />
     </Web3Provider>
   );
 }

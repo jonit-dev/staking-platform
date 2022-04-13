@@ -1,6 +1,6 @@
+import { ImageButton } from "@components/ImageButton";
 import React from "react";
 import styled from "styled-components";
-import { ImageButton } from "../ImageButton";
 
 interface IProps {
   onClick: () => void;

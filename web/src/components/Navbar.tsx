@@ -1,6 +1,5 @@
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";
-import { toast } from "react-toastify";
 import styled from "styled-components";
 import { useWeb3Context } from "web3-react";
 import { showError } from "../libs/ToastHelpers";
@@ -15,10 +14,8 @@ export const Navbar: React.FC<IProps> = observer((props) => {
   const context = useWeb3Context();
 
   useEffect(() => {
-    showError("Error!");
-  }, []);
+    console.log(context);
 
-  useEffect(() => {
     if (context?.account && context?.active) {
       console.log(context);
       web3Store.setAccount(context.account);
@@ -28,11 +25,20 @@ export const Navbar: React.FC<IProps> = observer((props) => {
 
   const onConnectWallet = async () => {
     try {
-      await context.setConnector("MetaMask");
+      await context.setConnector("MetaMask", {
+        suppressAndThrowErrors: true,
+      });
       web3Store.setStatus(Web3Status.Loading);
     } catch (error: any) {
-      console.error(error);
-      toast(error.message);
+      switch (error.code) {
+        case "ETHEREUM_ACCESS_DENIED":
+          showError("Please accept your Metamask request to proceed");
+          break;
+        default:
+          showError("Oops! Failed to connect to your Metamask wallet");
+          break;
+      }
+
       context.unsetConnector();
     }
   };
