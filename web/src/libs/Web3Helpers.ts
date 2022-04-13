@@ -1,6 +1,7 @@
 import { web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
 import Web3 from "web3";
+import { provider } from "web3-core";
 import { showError } from "./ToastHelpers";
 
 export const disconnectWallet = async () => {
@@ -42,7 +43,9 @@ export const connectToWallet = async () => {
       return;
     }
 
-    if (window.web3) {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum as provider);
+    } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider);
     }
 
