@@ -1,6 +1,4 @@
-import { isBrowser } from "@libs/WindowHelper";
 import { makeAutoObservable } from "mobx";
-import { makePersistable } from "mobx-persist-store";
 import Web3 from "web3";
 import { RootStore } from "./root.store";
 
@@ -19,18 +17,18 @@ export class Web3Store {
   public web3: Web3 | null = null;
   public accounts: string[] | null = null;
   public currentAccount: string | null = null;
-  public status: Web3Status = Web3Status.Disconnected;
+  public status: Web3Status = Web3Status.Loading;
   public network: INetwork | null = null;
   public hasMetamask: boolean = false;
 
   constructor(public root: RootStore) {
     makeAutoObservable(this);
 
-    makePersistable(this, {
-      name: this.constructor.name,
-      properties: ["status"],
-      storage: isBrowser() ? window.localStorage : undefined,
-    });
+    // makePersistable(this, {
+    //   name: this.constructor.name,
+    //   properties: [],
+    //   storage: isBrowser() ? window.localStorage : undefined,
+    // });
   }
 
   public initializeMetamask() {

@@ -25,17 +25,19 @@ class MetamaskProvider implements IWalletProvider {
     }
   }
 
-  public async isConnected(displayLoading: boolean = true) {
+  public async getAccounts(): Promise<string[] | undefined> {
+    if (this.isInstalled()) {
+      const { web3 } = web3Store;
+      const accounts = await web3?.eth.getAccounts();
+      return accounts;
+    }
+  }
+
+  public async isConnected() {
     if (this.isInstalled()) {
       const { web3 } = web3Store;
 
-      if (displayLoading) {
-        web3Store.setStatus(Web3Status.Loading);
-      }
-
       const accounts = await web3?.eth.getAccounts();
-
-      console.log(accounts);
 
       if (accounts!.length > 0) {
         return true;
@@ -47,10 +49,9 @@ class MetamaskProvider implements IWalletProvider {
 
   public async connect() {
     try {
+      web3Store.setStatus(Web3Status.Loading);
       if (this.isInstalled()) {
         const { ethereum } = window;
-
-        web3Store.setStatus(Web3Status.Loading);
 
         const accounts = (await ethereum.request({
           method: "eth_requestAccounts",
@@ -62,13 +63,14 @@ class MetamaskProvider implements IWalletProvider {
           );
         }
 
-        const updatedAccount = accounts[0];
+        const networkName = await networkHelper.getNetworkName();
+        const networkId = await networkHelper.getNetworkId();
 
-        if (web3Store.currentAccount !== updatedAccount) {
-          web3Store.setCurrentAccount(updatedAccount);
-        }
+        web3Store.setNetwork(networkId, networkName);
+
         web3Store.setStatus(Web3Status.Connected);
 
+        web3Store.setCurrentAccount(accounts[0]);
         showMessage("You've successfully connected with Metamask.", "success");
       } else {
         throw new Error(
@@ -90,11 +92,9 @@ class MetamaskProvider implements IWalletProvider {
 
   public async disconnect() {
     showMessage(
-      "You've soft disconnect from our website. Please disconnect directly in your Metamask as well.",
-      "success"
+      "Please disconnect directly through your Metamask wallet.",
+      "warning"
     );
-    web3Store.clear();
-    web3Store.setStatus(Web3Status.Disconnected);
   }
 }
 

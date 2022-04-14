@@ -1,5 +1,6 @@
 import { appEnv } from "@constants/appEnv";
 import { showError } from "@libs/ToastHelpers";
+import { contractHelper } from "@libs/web3/ContractHelper";
 import { metamask } from "@libs/web3/wallets/MetamaskProvider";
 import { web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
@@ -27,21 +28,33 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
         );
       }
 
-      const isConnected = await metamask.isConnected(false);
+      const isConnected = await metamask.isConnected();
 
-      if (!isConnected) {
+      if (isConnected) {
+        web3Store.setStatus(Web3Status.Connected);
+      } else {
         web3Store.setStatus(Web3Status.Disconnected);
       }
+
+      setInterval(() => {
+        // keep checking to see if user disconnected!
+        (async () => {
+          const accounts = await metamask.getAccounts();
+          if (accounts && accounts.length === 0) {
+            web3Store.setStatus(Web3Status.Disconnected);
+          }
+        })();
+      }, 1000);
     })();
   }, []);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (currentAccount && (await metamask.isConnected())) {
-  //       await contractHelper.refreshInformation();
-  //     }
-  //   })();
-  // }, [currentAccount]);
+  useEffect(() => {
+    (async () => {
+      if (currentAccount && (await metamask.isConnected())) {
+        await contractHelper.refreshInformation();
+      }
+    })();
+  }, [currentAccount]);
 
   return <Container>{children}</Container>;
 });

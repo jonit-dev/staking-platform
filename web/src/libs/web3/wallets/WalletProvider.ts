@@ -4,4 +4,5 @@ export interface IWalletProvider {
   isConnected: () => Promise<boolean>;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
+  getAccounts: () => Promise<string[] | undefined>;
 }
