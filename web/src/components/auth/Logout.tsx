@@ -1,3 +1,4 @@
+import { uiColors } from "@constants/colors";
 import React from "react";
 import styled from "styled-components";
 
@@ -19,5 +20,6 @@ const Container = styled.div`
   p {
     font-weight: bold;
     cursor: pointer;
+    color: ${uiColors.gray};
   }
 `;
