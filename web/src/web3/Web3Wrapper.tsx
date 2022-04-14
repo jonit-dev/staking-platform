@@ -16,11 +16,13 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
   const { currentAccount, web3 } = web3Store;
 
   useEffect(() => {
-    if (!metamask.isInstalled()) {
-      showError("Error: you must have MetaMask installed to use this dApp.");
-    }
-
     (async () => {
+      if (!metamask.isInstalled()) {
+        showError("Error: you must have MetaMask installed to use this dApp.");
+      } else {
+        await web3Store.initializeMetamask();
+      }
+
       const correctNetwork = await metamask.isCorrectNetwork();
       if (correctNetwork === false) {
         showError(
@@ -40,7 +42,14 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
         // keep checking to see if user disconnected!
         (async () => {
           const accounts = await metamask.getAccounts();
-          if (accounts && accounts.length === 0) {
+
+          if (!accounts) {
+            return;
+          }
+
+          if (accounts && accounts.length > 0) {
+            web3Store.setStatus(Web3Status.Connected);
+          } else {
             web3Store.setStatus(Web3Status.Disconnected);
           }
         })();
@@ -50,6 +59,7 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
 
   useEffect(() => {
     (async () => {
+      console.log(currentAccount);
       if (currentAccount && (await metamask.isConnected())) {
         await contractHelper.refreshInformation();
       }

@@ -8,7 +8,6 @@ import { IWalletProvider } from "./WalletProvider";
 class MetamaskProvider implements IWalletProvider {
   public isInstalled() {
     if (window.ethereum && window.ethereum.isMetaMask) {
-      web3Store.initializeMetamask();
       return true;
     }
 
@@ -30,6 +29,14 @@ class MetamaskProvider implements IWalletProvider {
       const { web3 } = web3Store;
       const accounts = await web3?.eth.getAccounts();
       return accounts;
+    }
+  }
+
+  public async refreshAccounts(): Promise<void> {
+    const accounts = await this.getAccounts();
+    console.log(accounts);
+    if (accounts) {
+      web3Store.setAccounts(accounts);
     }
   }
 

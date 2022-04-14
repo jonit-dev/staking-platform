@@ -10,7 +10,7 @@ export class ContractsStore {
 
   public balances = {
     DAIToken: 0,
-    Dapptoken: 0,
+    DappToken: 0,
     staked: 0,
   };
 
@@ -30,7 +30,16 @@ export class ContractsStore {
         .balanceOf(currentAccount)
         .call();
 
+      const dappBalance = await this.DappToken?.methods
+        .balanceOf(currentAccount)
+        .call();
+      const totalStakedOnFarm = await this.TokenFarm?.methods
+        .getOwnStakedTokensBalance()
+        .call();
+
       this.setBalance("DAIToken", daiBalance);
+      this.setBalance("DappToken", dappBalance);
+      this.setBalance("staked", totalStakedOnFarm);
     } catch (error) {
       console.error(error);
       showError(error.message);

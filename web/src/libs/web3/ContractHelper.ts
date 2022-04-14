@@ -19,6 +19,10 @@ export class ContractHelper {
 
       const { web3 } = web3Store;
 
+      if (!web3) {
+        throw new Error("Web3 is not initialized");
+      }
+
       return new web3.eth.Contract(abi, address);
     } catch (error) {
       showError(error.message);
