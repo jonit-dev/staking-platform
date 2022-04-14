@@ -1,7 +1,7 @@
+import { Web3Wrapper } from "@components/web3/Web3Wrapper";
 import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Web3Wrapper } from "web3/Web3Wrapper";
 
 import { ScriptLoader } from "../components/ScriptLoader";
 import "../styles/index.css";
