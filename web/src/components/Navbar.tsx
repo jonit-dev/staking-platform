@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 import { web3Store } from "../store/root.store";
-import { Web3Status } from "../store/web3.store";
+import { NetworkConnectionStatus, Web3Status } from "../store/web3.store";
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
 import { Loading } from "./Loading";
@@ -19,6 +19,12 @@ export const Navbar: React.FC = observer(() => {
   };
 
   const onRenderWalletButton = () => {
+    if (
+      web3Store.networkConnectionStatus === NetworkConnectionStatus.WrongNetwork
+    ) {
+      return <WrongNetworkText>Wrong Network</WrongNetworkText>;
+    }
+
     switch (web3Store.status) {
       case Web3Status.Loading:
         return <Loading />;
@@ -83,4 +89,9 @@ const NavbarContainer = styled.div`
   .navbar {
     min-height: 4.25rem;
   }
+`;
+
+const WrongNetworkText = styled.p`
+  font-weight: bold;
+  color: #ff4343;
 `;
