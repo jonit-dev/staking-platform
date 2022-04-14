@@ -1,5 +1,5 @@
 import { appEnv } from "@constants/appEnv";
-import { showError } from "@libs/ToastHelpers";
+import { showError, showMessage } from "@libs/ToastHelpers";
 import { web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
 import { networkHelper } from "../NetworkHelper";
@@ -68,6 +68,8 @@ class MetamaskProvider implements IWalletProvider {
           web3Store.setCurrentAccount(updatedAccount);
         }
         web3Store.setStatus(Web3Status.Connected);
+
+        showMessage("You've successfully connected with Metamask.", "success");
       } else {
         throw new Error(
           "Error: you must have MetaMask installed to use this dApp."
@@ -87,8 +89,12 @@ class MetamaskProvider implements IWalletProvider {
   }
 
   public async disconnect() {
-    web3Store.setStatus(Web3Status.Disconnected);
+    showMessage(
+      "You've soft disconnect from our website. Please disconnect directly in your Metamask as well.",
+      "success"
+    );
     web3Store.clear();
+    web3Store.setStatus(Web3Status.Disconnected);
   }
 }
 

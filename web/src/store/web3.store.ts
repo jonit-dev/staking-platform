@@ -49,6 +49,7 @@ export class Web3Store {
     this.accounts = null;
     this.currentAccount = null;
     this.status = Web3Status.Disconnected;
+    this.network = null;
   }
 
   public setStatus(status: Web3Status) {
