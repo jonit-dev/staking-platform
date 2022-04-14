@@ -14,12 +14,18 @@ export interface INetwork {
   name: string;
 }
 
+export enum NetworkConnectionStatus {
+  CorrectNetwork,
+  WrongNetwork,
+}
+
 export class Web3Store {
   public web3: Web3 | null = null;
   public accounts: string[] | null = null;
   public currentAccount: string | null = null;
   public status: Web3Status = Web3Status.Loading;
   public network: INetwork | null = null;
+  public networkConnectionStatus: NetworkConnectionStatus | null = null;
   public hasMetamask: boolean = false;
 
   constructor(public root: RootStore) {
@@ -36,6 +42,10 @@ export class Web3Store {
     this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
     await metamask.refreshNetworkInfo();
     await metamask.refreshAccounts();
+  }
+
+  public setNetworkConnectionStatus(status: NetworkConnectionStatus) {
+    this.networkConnectionStatus = status;
   }
 
   public setAccounts = (accounts: string[] | null) => {

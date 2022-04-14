@@ -34,7 +34,6 @@ class MetamaskProvider implements IWalletProvider {
   public async refreshAccounts(): Promise<void> {
     const accounts = await this.getAccounts();
     if (accounts && accounts.length > 0) {
-      console.log("Refreshing accounts...");
       web3Store.setAccounts(accounts);
       web3Store.setCurrentAccount(accounts[0]);
     }
@@ -73,6 +72,9 @@ class MetamaskProvider implements IWalletProvider {
     } else {
       web3Store.setStatus(Web3Status.Disconnected);
     }
+
+    await this.refreshAccounts();
+    await this.refreshNetworkInfo();
   }
 
   public async connect() {
