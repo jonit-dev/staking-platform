@@ -28,6 +28,7 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
         showError(
           `Please switch to the ${appEnv.web3.network.name} network to use this dApp.`
         );
+        return;
       }
 
       const isConnected = await metamask.isConnected();
@@ -41,17 +42,7 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
       setInterval(() => {
         // keep checking to see if user disconnected!
         (async () => {
-          const accounts = await metamask.getAccounts();
-
-          if (!accounts) {
-            return;
-          }
-
-          if (accounts && accounts.length > 0) {
-            web3Store.setStatus(Web3Status.Connected);
-          } else {
-            web3Store.setStatus(Web3Status.Disconnected);
-          }
+          await metamask.updateConnectionStatus();
         })();
       }, 1000);
     })();
@@ -59,9 +50,13 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
 
   useEffect(() => {
     (async () => {
-      console.log(currentAccount);
-      if (currentAccount && (await metamask.isConnected())) {
-        await contractHelper.refreshInformation();
+      if (
+        metamask.isInstalled() &&
+        currentAccount &&
+        (await metamask.isConnected()) &&
+        (await metamask.isCorrectNetwork())
+      ) {
+        await contractHelper.loadContractsData();
       }
     })();
   }, [currentAccount]);

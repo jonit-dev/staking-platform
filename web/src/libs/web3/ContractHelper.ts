@@ -44,7 +44,7 @@ export class ContractHelper {
     }
   }
 
-  public async refreshInformation() {
+  public async loadContractsData() {
     console.log("Refreshing contract information...");
     // once everything is connected...
 

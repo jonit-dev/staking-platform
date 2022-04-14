@@ -10,7 +10,6 @@ class MetamaskProvider implements IWalletProvider {
     if (window.ethereum && window.ethereum.isMetaMask) {
       return true;
     }
-
     return false;
   }
 
@@ -34,10 +33,18 @@ class MetamaskProvider implements IWalletProvider {
 
   public async refreshAccounts(): Promise<void> {
     const accounts = await this.getAccounts();
-    console.log(accounts);
-    if (accounts) {
+    if (accounts && accounts.length > 0) {
+      console.log("Refreshing accounts...");
       web3Store.setAccounts(accounts);
+      web3Store.setCurrentAccount(accounts[0]);
     }
+  }
+
+  public async refreshNetworkInfo(): Promise<void> {
+    const networkName = await networkHelper.getNetworkName();
+    const networkId = await networkHelper.getNetworkId();
+
+    web3Store.setNetwork(networkId, networkName);
   }
 
   public async isConnected() {
@@ -52,6 +59,20 @@ class MetamaskProvider implements IWalletProvider {
       return false;
     }
     return false;
+  }
+
+  public async updateConnectionStatus() {
+    const accounts = await metamask.getAccounts();
+
+    if (!accounts) {
+      return;
+    }
+
+    if (accounts && accounts.length > 0) {
+      web3Store.setStatus(Web3Status.Connected);
+    } else {
+      web3Store.setStatus(Web3Status.Disconnected);
+    }
   }
 
   public async connect() {
@@ -70,10 +91,7 @@ class MetamaskProvider implements IWalletProvider {
           );
         }
 
-        const networkName = await networkHelper.getNetworkName();
-        const networkId = await networkHelper.getNetworkId();
-
-        web3Store.setNetwork(networkId, networkName);
+        await this.refreshNetworkInfo();
 
         web3Store.setStatus(Web3Status.Connected);
 

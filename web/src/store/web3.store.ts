@@ -34,6 +34,7 @@ export class Web3Store {
 
   public async initializeMetamask() {
     this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+    await metamask.refreshNetworkInfo();
     await metamask.refreshAccounts();
   }
 
