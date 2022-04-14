@@ -1,3 +1,4 @@
+import { networkHelper } from "@libs/web3/NetworkHelper";
 import { metamask } from "@libs/web3/wallets/MetamaskProvider";
 import { observer } from "mobx-react";
 import React from "react";
@@ -22,7 +23,15 @@ export const Navbar: React.FC = observer(() => {
     if (
       web3Store.networkConnectionStatus === NetworkConnectionStatus.WrongNetwork
     ) {
-      return <WrongNetworkText>Wrong Network</WrongNetworkText>;
+      return (
+        <WrongNetworkText
+          onClick={async () => {
+            await networkHelper.networkSwitch();
+          }}
+        >
+          Wrong Network
+        </WrongNetworkText>
+      );
     }
 
     switch (web3Store.status) {
@@ -94,4 +103,5 @@ const NavbarContainer = styled.div`
 const WrongNetworkText = styled.p`
   font-weight: bold;
   color: #ff4343;
+  cursor: pointer;
 `;

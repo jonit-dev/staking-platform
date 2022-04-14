@@ -1,4 +1,5 @@
 import { contractHelper } from "@libs/web3/ContractHelper";
+import { networkHelper } from "@libs/web3/NetworkHelper";
 import { metamask } from "@libs/web3/wallets/MetamaskProvider";
 import { web3Store } from "@store/root.store";
 import { observer } from "mobx-react";
@@ -20,7 +21,7 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
         metamask.isInstalled() &&
         currentAccount &&
         (await metamask.isConnected()) &&
-        (await metamask.isCorrectNetwork())
+        (await networkHelper.isCorrectNetwork())
       ) {
         await contractHelper.loadContractsData();
       }

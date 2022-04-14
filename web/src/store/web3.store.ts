@@ -1,3 +1,4 @@
+import { networkHelper } from "@libs/web3/NetworkHelper";
 import { metamask } from "@libs/web3/wallets/MetamaskProvider";
 import { makeAutoObservable } from "mobx";
 import Web3 from "web3";
@@ -30,17 +31,11 @@ export class Web3Store {
 
   constructor(public root: RootStore) {
     makeAutoObservable(this);
-
-    // makePersistable(this, {
-    //   name: this.constructor.name,
-    //   properties: [],
-    //   storage: isBrowser() ? window.localStorage : undefined,
-    // });
   }
 
   public async initializeMetamask() {
     this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-    await metamask.refreshNetworkInfo();
+    await networkHelper.refreshNetworkInfo();
     await metamask.refreshAccounts();
   }
 

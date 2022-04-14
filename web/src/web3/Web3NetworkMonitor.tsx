@@ -1,6 +1,6 @@
 import { appEnv } from "@constants/appEnv";
 import { showError, showMessage } from "@libs/ToastHelpers";
-import { metamask } from "@libs/web3/wallets/MetamaskProvider";
+import { networkHelper } from "@libs/web3/NetworkHelper";
 import { web3Store } from "@store/root.store";
 import { NetworkConnectionStatus } from "@store/web3.store";
 import { observer } from "mobx-react";
@@ -17,7 +17,7 @@ export const Web3NetworkMonitor: React.FC<IProps> = observer(({ children }) => {
   useEffect(() => {
     (async () => {
       if (network) {
-        const isCorrectNetwork = await metamask.isCorrectNetwork();
+        const isCorrectNetwork = await networkHelper.isCorrectNetwork();
         if (!isCorrectNetwork) {
           if (
             !web3Store.networkConnectionStatus ||

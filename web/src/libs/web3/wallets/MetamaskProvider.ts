@@ -1,5 +1,5 @@
-import { appEnv } from "@constants/appEnv";
 import { showError, showMessage } from "@libs/ToastHelpers";
+import { isBrowser } from "@libs/WindowHelper";
 import { web3Store } from "@store/root.store";
 import { Web3Status } from "@store/web3.store";
 import { networkHelper } from "../NetworkHelper";
@@ -7,20 +7,13 @@ import { IWalletProvider } from "./WalletProvider";
 
 class MetamaskProvider implements IWalletProvider {
   public isInstalled() {
-    if (window.ethereum && window.ethereum.isMetaMask) {
-      return true;
+    if (isBrowser()) {
+      if (window.ethereum && window.ethereum.isMetaMask) {
+        return true;
+      }
     }
+
     return false;
-  }
-
-  public async isCorrectNetwork(): Promise<boolean | undefined> {
-    if (this.isInstalled()) {
-      const requiredNetwork = appEnv.web3.network.id;
-
-      const currentNetwork = await networkHelper.getNetworkId();
-
-      return requiredNetwork === currentNetwork;
-    }
   }
 
   public async getAccounts(): Promise<string[] | undefined> {
@@ -37,13 +30,6 @@ class MetamaskProvider implements IWalletProvider {
       web3Store.setAccounts(accounts);
       web3Store.setCurrentAccount(accounts[0]);
     }
-  }
-
-  public async refreshNetworkInfo(): Promise<void> {
-    const networkName = await networkHelper.getNetworkName();
-    const networkId = await networkHelper.getNetworkId();
-
-    web3Store.setNetwork(networkId, networkName);
   }
 
   public async isConnected() {
@@ -74,7 +60,7 @@ class MetamaskProvider implements IWalletProvider {
     }
 
     await this.refreshAccounts();
-    await this.refreshNetworkInfo();
+    await networkHelper.refreshNetworkInfo();
   }
 
   public async connect() {
@@ -93,7 +79,7 @@ class MetamaskProvider implements IWalletProvider {
           );
         }
 
-        await this.refreshNetworkInfo();
+        await networkHelper.refreshNetworkInfo();
 
         web3Store.setStatus(Web3Status.Connected);
 
