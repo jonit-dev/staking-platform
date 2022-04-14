@@ -1,4 +1,3 @@
-import { BaseButton } from "@components/BaseButton";
 import React from "react";
 import styled from "styled-components";
 
@@ -9,13 +8,16 @@ interface IProps {
 export const Logout: React.FC<IProps> = ({ onClick }) => {
   return (
     <Container onClick={onClick}>
-      <BaseButton>
-        <p>Disconnect</p>
-      </BaseButton>
+      <p>Disconnect</p>
     </Container>
   );
 };
 
 const Container = styled.div`
   max-width: 135px;
+
+  p {
+    font-weight: bold;
+    cursor: pointer;
+  }
 `;

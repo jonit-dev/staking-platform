@@ -16,21 +16,24 @@ export interface INetwork {
 }
 
 export class Web3Store {
-  public web3: Web3;
+  public web3: Web3 | null = null;
   public accounts: string[] | null = null;
   public currentAccount: string | null = null;
   public status: Web3Status = Web3Status.Disconnected;
   public network: INetwork | null = null;
+  public hasMetamask: boolean = false;
 
   constructor(public root: RootStore) {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: this.constructor.name,
-      properties: ["currentAccount", "status", "network"],
+      properties: ["status"],
       storage: isBrowser() ? window.localStorage : undefined,
     });
+  }
 
+  public initializeMetamask() {
     this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
   }
 

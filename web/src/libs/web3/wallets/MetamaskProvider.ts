@@ -8,39 +8,38 @@ import { IWalletProvider } from "./WalletProvider";
 class MetamaskProvider implements IWalletProvider {
   public isInstalled() {
     if (window.ethereum && window.ethereum.isMetaMask) {
+      web3Store.initializeMetamask();
       return true;
     }
 
     return false;
   }
 
-  public async isCorrectNetwork(): Promise<boolean> {
-    const requiredNetwork = appEnv.web3.network.id;
+  public async isCorrectNetwork(): Promise<boolean | undefined> {
+    if (this.isInstalled()) {
+      const requiredNetwork = appEnv.web3.network.id;
 
-    const currentNetwork = await networkHelper.getNetworkId();
+      const currentNetwork = await networkHelper.getNetworkId();
 
-    return requiredNetwork === currentNetwork;
+      return requiredNetwork === currentNetwork;
+    }
   }
 
-  public async isConnected() {
+  public async isConnected(displayLoading: boolean = true) {
     if (this.isInstalled()) {
       const { web3 } = web3Store;
 
-      web3Store.setStatus(Web3Status.Loading);
-
-      const accounts = await web3.eth.getAccounts();
-
-      if (accounts.length > 0) {
-        console.log(accounts);
-        web3Store.setCurrentAccount(accounts[0]);
-        const networkId = await networkHelper.getNetworkId();
-        const networkName = await networkHelper.getNetworkName();
-        web3Store.setNetwork(networkId, networkName);
-        web3Store.setStatus(Web3Status.Connected);
-        return true;
+      if (displayLoading) {
+        web3Store.setStatus(Web3Status.Loading);
       }
 
-      web3Store.setStatus(Web3Status.Disconnected);
+      const accounts = await web3?.eth.getAccounts();
+
+      console.log(accounts);
+
+      if (accounts!.length > 0) {
+        return true;
+      }
       return false;
     }
     return false;
@@ -48,25 +47,32 @@ class MetamaskProvider implements IWalletProvider {
 
   public async connect() {
     try {
-      const { web3 } = web3Store;
+      if (this.isInstalled()) {
+        const { ethereum } = window;
 
-      web3Store.setStatus(Web3Status.Loading);
+        web3Store.setStatus(Web3Status.Loading);
 
-      const accounts = await web3.eth.getAccounts();
+        const accounts = (await ethereum.request({
+          method: "eth_requestAccounts",
+        })) as string[];
 
-      if (!accounts) {
-        showError(
-          "Oops! Failed to load your Metamask accounts. Please, try again."
+        if (!accounts) {
+          throw new Error(
+            "Oops! Failed to load your Metamask accounts. Please, try again."
+          );
+        }
+
+        const updatedAccount = accounts[0];
+
+        if (web3Store.currentAccount !== updatedAccount) {
+          web3Store.setCurrentAccount(updatedAccount);
+        }
+        web3Store.setStatus(Web3Status.Connected);
+      } else {
+        throw new Error(
+          "Error: you must have MetaMask installed to use this dApp."
         );
-        return;
       }
-
-      const updatedAccount = accounts[0];
-
-      if (web3Store.currentAccount !== updatedAccount) {
-        web3Store.setCurrentAccount(updatedAccount);
-      }
-      web3Store.setStatus(Web3Status.Connected);
     } catch (error) {
       web3Store.setStatus(Web3Status.Disconnected);
       console.error(error);
@@ -82,6 +88,7 @@ class MetamaskProvider implements IWalletProvider {
 
   public async disconnect() {
     web3Store.setStatus(Web3Status.Disconnected);
+    web3Store.clear();
   }
 }
 
