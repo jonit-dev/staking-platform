@@ -1,6 +1,7 @@
 import { isBrowser } from "@libs/WindowHelper";
 import { makeAutoObservable } from "mobx";
 import { makePersistable } from "mobx-persist-store";
+import Web3 from "web3";
 import { RootStore } from "./root.store";
 
 export enum Web3Status {
@@ -15,6 +16,7 @@ export interface INetwork {
 }
 
 export class Web3Store {
+  public web3: Web3;
   public accounts: string[] | null = null;
   public currentAccount: string | null = null;
   public status: Web3Status = Web3Status.Disconnected;
@@ -25,9 +27,11 @@ export class Web3Store {
 
     makePersistable(this, {
       name: this.constructor.name,
-      properties: ["status", "currentAccount", "network"],
+      properties: ["currentAccount", "status", "network"],
       storage: isBrowser() ? window.localStorage : undefined,
     });
+
+    this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
   }
 
   public setAccounts = (accounts: string[] | null) => {

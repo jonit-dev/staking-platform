@@ -1,4 +1,4 @@
-import { connectToWallet, disconnectWallet } from "@libs/web3/walletHelpers";
+import { metamask } from "@libs/web3/wallets/MetamaskProvider";
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
@@ -11,11 +11,11 @@ import { NoSSR } from "./other/NoSSR";
 
 export const Navbar: React.FC = observer(() => {
   const onConnectWallet = async () => {
-    await connectToWallet();
+    await metamask.connect();
   };
 
   const onDisconnectWallet = async () => {
-    await disconnectWallet();
+    await metamask.disconnect();
   };
 
   const onRenderWalletButton = () => {

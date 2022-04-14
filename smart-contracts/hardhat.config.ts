@@ -30,7 +30,7 @@ const config: HardhatUserConfig = {
     // comment this in if you want to use ganache UI. Currently it's using the ganache-cli automatically!
     localhost: {
       url: "HTTP://127.0.0.1:7545",
-      chainId: 1337,
+      chainId: 1337, // make sure you change your Ganache UI to use this chainID (settings => server => network ID)
     },
     // deploy to rinkeby tutorial: https://youtu.be/9Qpi80dQsGU?t=1272
     ropsten: {

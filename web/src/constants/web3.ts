@@ -3,5 +3,5 @@ interface IWeb3Networks {
 }
 
 export const web3Networks: IWeb3Networks = {
-  5777: "localhost",
+  1337: "localhost",
 };
