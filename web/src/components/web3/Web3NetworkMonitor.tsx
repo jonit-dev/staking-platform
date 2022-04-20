@@ -61,4 +61,6 @@ export const Web3NetworkMonitor: React.FC<IProps> = observer(
   }
 );
 
-const Container = styled.div``;
+const Container = styled.div`
+  height: 100%;
+`;
