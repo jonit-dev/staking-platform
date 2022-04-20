@@ -13,7 +13,7 @@ interface IProps {
 }
 
 export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
-  const { currentAccount, web3, network } = web3Store;
+  const { currentAccount } = web3Store;
 
   useEffect(() => {
     (async () => {
@@ -30,7 +30,11 @@ export const Web3Wrapper: React.FC<IProps> = observer(({ children }) => {
 
   return (
     <Container>
-      <Web3NetworkMonitor>
+      <Web3NetworkMonitor
+        onNetworkChangeSuccess={async () => {
+          await contractHelper.loadContractsData();
+        }}
+      >
         <Web3ConnectionMonitor>{children}</Web3ConnectionMonitor>
       </Web3NetworkMonitor>
     </Container>

@@ -11,7 +11,7 @@ export class ContractHelper {
 
       const { abi, address, network } = contract;
 
-      if (web3Store.network?.id !== network.chainId) {
+      if (!this.isCorrectContractNetwork(network)) {
         throw new Error(
           `Please, connect to ${network.name} to interact with this Smart Contract`
         );
@@ -55,6 +55,13 @@ export class ContractHelper {
     await contractsStore.loadBalances();
 
     console.log(toJS(contractsStore));
+  }
+
+  private isCorrectContractNetwork(network: any): boolean {
+    if (web3Store.network?.id !== network.chainId) {
+      return false;
+    }
+    return true;
   }
 }
 

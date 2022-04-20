@@ -9,46 +9,56 @@ import styled from "styled-components";
 
 interface IProps {
   children: React.ReactNode;
+  onNetworkChangeSuccess?: () => void;
+  onNetworkChangeError?: () => void;
 }
 
-export const Web3NetworkMonitor: React.FC<IProps> = observer(({ children }) => {
-  const { network } = web3Store;
+export const Web3NetworkMonitor: React.FC<IProps> = observer(
+  ({ children, onNetworkChangeSuccess, onNetworkChangeError }) => {
+    const { network } = web3Store;
 
-  useEffect(() => {
-    (async () => {
-      if (network) {
-        const isCorrectNetwork = await networkHelper.isCorrectNetwork();
-        if (!isCorrectNetwork) {
+    useEffect(() => {
+      (async () => {
+        if (network) {
+          const isCorrectNetwork = await networkHelper.isCorrectNetwork();
+          if (!isCorrectNetwork) {
+            if (
+              !web3Store.networkConnectionStatus ||
+              NetworkConnectionStatus.CorrectNetwork
+            ) {
+              showError(
+                `Please switch to the ${appEnv.web3.network.name} network to use this dApp.`
+              );
+              web3Store.setNetworkConnectionStatus(
+                NetworkConnectionStatus.WrongNetwork
+              );
+              if (onNetworkChangeError) {
+                onNetworkChangeError();
+              }
+            }
+          }
           if (
-            !web3Store.networkConnectionStatus ||
-            NetworkConnectionStatus.CorrectNetwork
+            web3Store.networkConnectionStatus ===
+              NetworkConnectionStatus.WrongNetwork &&
+            isCorrectNetwork
           ) {
-            showError(
-              `Please switch to the ${appEnv.web3.network.name} network to use this dApp.`
+            showMessage(
+              `Successfully switched to ${appEnv.web3.network.name} network.`,
+              "success"
             );
+            if (onNetworkChangeSuccess) {
+              onNetworkChangeSuccess();
+            }
             web3Store.setNetworkConnectionStatus(
-              NetworkConnectionStatus.WrongNetwork
+              NetworkConnectionStatus.CorrectNetwork
             );
           }
         }
-        if (
-          web3Store.networkConnectionStatus ===
-            NetworkConnectionStatus.WrongNetwork &&
-          isCorrectNetwork
-        ) {
-          showMessage(
-            `Successfully switched to ${appEnv.web3.network.name} network.`,
-            "success"
-          );
-          web3Store.setNetworkConnectionStatus(
-            NetworkConnectionStatus.CorrectNetwork
-          );
-        }
-      }
-    })();
-  }, [network]);
+      })();
+    }, [network]);
 
-  return <Container>{children}</Container>;
-});
+    return <Container>{children}</Container>;
+  }
+);
 
 const Container = styled.div``;

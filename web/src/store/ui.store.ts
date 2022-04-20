@@ -18,4 +18,8 @@ export class UIStore {
       this.notification = null;
     }, 5000);
   }
+
+  public setLoading(isLoading: boolean): void {
+    this.isLoading = isLoading;
+  }
 }

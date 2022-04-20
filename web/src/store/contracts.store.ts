@@ -20,6 +20,7 @@ export class ContractsStore {
 
   public async loadBalances() {
     try {
+      this.root.uiStore.setLoading(true);
       const { currentAccount } = this.root.web3Store;
 
       if (!currentAccount) {
@@ -40,6 +41,7 @@ export class ContractsStore {
       this.setBalance("DAIToken", daiBalance);
       this.setBalance("DappToken", dappBalance);
       this.setBalance("staked", totalStakedOnFarm);
+      this.root.uiStore.setLoading(false);
     } catch (error) {
       console.error(error);
       showError(error.message);
