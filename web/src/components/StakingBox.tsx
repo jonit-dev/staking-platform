@@ -25,12 +25,12 @@ export const StakingBox: React.FC = observer(() => {
     <Container className="box">
       <div>
         <div className="field">
-          <label className="label">DAI Balance</label>
+          <label className="label">Staked DAI</label>
           <div className="control">
             <input
-              className="input"
+              className="input transparent"
               type="text"
-              value={daiTokenBalance}
+              value={stakedBalance}
               readOnly
             />
           </div>
@@ -39,16 +39,14 @@ export const StakingBox: React.FC = observer(() => {
           <label className="label">dAppToken Balance</label>
           <div className="control">
             <input
-              className="input"
+              className="input transparent"
               type="text"
               value={dappTokenBalance}
               readOnly
             />
           </div>
         </div>
-        <StakedTag className="tag">
-          Staked DAI Balance: {stakedBalance}
-        </StakedTag>
+        <StakedTag className="tag">DAI Balance: {daiTokenBalance}</StakedTag>
 
         <Button
           label="Stake DAI"
@@ -60,7 +58,13 @@ export const StakingBox: React.FC = observer(() => {
   );
 });
 
-const Container = styled.div``;
+const Container = styled.div`
+  .transparent {
+    background-color: transparent;
+    border: none;
+    color: white;
+  }
+`;
 
 const StakedTag = styled.span`
   margin-bottom: 1rem;
