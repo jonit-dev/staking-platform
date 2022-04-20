@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/web3": "^1.2.2",
+    "cryptocurrency-icons": "^0.18.0",
     "mobx": "^6.5.0",
     "mobx-persist-store": "^1.0.6",
     "mobx-react": "^7.3.0",
