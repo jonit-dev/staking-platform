@@ -83,11 +83,14 @@ export const StakingBox: React.FC = observer(() => {
         </div>
 
         <StakedTag className="tag">DAI Balance: {balances.DAIToken}</StakedTag>
+        <StakedTag className="tag">
+          DAppToken Earnings: {balances.DappToken}
+        </StakedTag>
 
         {balances.DAIToken > 0 ? (
           <Button
             label="Stake DAI"
-            className="is-medium is-fullwidth"
+            className="button is-medium is-fullwidth"
             onClick={onStakeDAI}
           />
         ) : (
@@ -96,10 +99,9 @@ export const StakingBox: React.FC = observer(() => {
 
         {balances.staked > 0 && (
           <>
-            <br />
             <Button
               label="UnStake DAI"
-              className="is-medium is-fullwidth"
+              className="button is-medium is-fullwidth"
               onClick={onUnStakeDAI}
             />
           </>
@@ -120,8 +122,13 @@ const Container = styled.div`
     font-size: 0.8rem;
     color: ${uiColors.gray};
   }
+
+  .button {
+    margin-top: 1rem;
+  }
 `;
 
-const StakedTag = styled.span`
-  margin-bottom: 1rem;
+const StakedTag = styled.div`
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
 `;
