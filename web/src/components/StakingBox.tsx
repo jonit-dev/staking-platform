@@ -25,7 +25,6 @@ export const StakingBox: React.FC = observer(() => {
       if (!TokenFarm) {
         throw new Error("Failed to load TokenFarm");
       }
-
       await stakeTokens(DAIToken, TokenFarm, balances.DAIToken);
     } catch (error) {
       showError(error.message);
@@ -92,7 +91,7 @@ export const StakingBox: React.FC = observer(() => {
             onClick={onStakeDAI}
           />
         ) : (
-          <p className="small">Please get some DAI in your Metamask first...</p>
+          <p className="small">To stake, add some DAI to your metamask.</p>
         )}
 
         {balances.staked > 0 && (

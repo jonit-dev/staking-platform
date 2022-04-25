@@ -1,5 +1,6 @@
 import { showError } from "@libs/ToastHelpers";
-import { makeAutoObservable } from "mobx";
+import { ToToken } from "@libs/web3/TokenHelpers";
+import { makeAutoObservable, toJS } from "mobx";
 import { Contract } from "web3-eth-contract";
 import { RootStore } from "./root.store";
 
@@ -35,12 +36,14 @@ export class ContractsStore {
         .balanceOf(currentAccount)
         .call();
       const totalStakedOnFarm = await this.TokenFarm?.methods
-        .getOwnStakedTokensBalance()
+        .stakingBalance(currentAccount)
         .call();
 
       this.setBalance("DAIToken", daiBalance);
       this.setBalance("DappToken", dappBalance);
-      this.setBalance("staked", totalStakedOnFarm);
+      this.setBalance("staked", ToToken(totalStakedOnFarm));
+
+      console.log(toJS(this.balances));
       this.root.uiStore.setLoading(false);
     } catch (error) {
       console.error(error);
@@ -50,7 +53,7 @@ export class ContractsStore {
 
   public setBalance(token: string, balance: number) {
     //@ts-ignore
-    this.balances[token] = balance;
+    this.balances[token] = Number(balance);
   }
 
   public setContract(token: string, contract: Contract) {

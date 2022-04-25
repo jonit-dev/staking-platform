@@ -1,6 +1,5 @@
 import { showError } from "@libs/ToastHelpers";
 import { contractsStore, web3Store } from "@store/root.store";
-import { toJS } from "mobx";
 
 import { Contract } from "web3-eth-contract";
 
@@ -53,8 +52,6 @@ export class ContractHelper {
     this.loadContractsToStore("TokenFarm");
 
     await contractsStore.loadBalances();
-
-    console.log(toJS(contractsStore));
   }
 
   private isCorrectContractNetwork(network: any): boolean {
