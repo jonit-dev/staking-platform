@@ -42,7 +42,10 @@ export const getDeployedContractData = (
   contractName: string
 ): IDeployedContractData => {
   const deployedContract = fs.readFileSync(
-    path.resolve(__dirname, `../ABI/${contractName}.json`)
+    path.resolve(
+      __dirname,
+      `../artifacts/contracts/${contractName}.sol/${contractName}.json`
+    )
   );
 
   const data = JSON.parse(deployedContract.toString());
