@@ -1,4 +1,5 @@
 {
   "solidity.packageDefaultDependenciesContractsDirectory": "",
-  "solidity.packageDefaultDependenciesDirectory": "node_modules"
+  "solidity.packageDefaultDependenciesDirectory": "node_modules",
+  "workbench.colorTheme": "Evondev Dracula Darker Contrast"
 }

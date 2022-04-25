@@ -3,37 +3,57 @@ import dappTokenIcon from "cryptocurrency-icons/32/white/abt.png";
 import daiIcon from "cryptocurrency-icons/32/white/dai.png";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { FormEvent } from "react";
 import styled from "styled-components";
 import { Button } from "./Button";
 
-import { fromWei } from "web3-utils";
+import { uiColors } from "@constants/colors";
+import { stakeTokens, unStakeTokens } from "@libs/StakingHelpers";
+import { showError } from "@libs/ToastHelpers";
 
 export const StakingBox: React.FC = observer(() => {
-  const { DAIToken, DappToken, staked } = contractsStore.balances;
+  const { DAIToken, DappToken, TokenFarm } = contractsStore;
+  const balances = contractsStore.balances;
 
-  const [daiTokenBalance, setDaiTokenBalance] = useState(0);
-  const [dappTokenBalance, setDappTokenBalance] = useState(0);
-  const [stakedBalance, setStakedBalance] = useState(0);
+  const onStakeDAI = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      if (!DAIToken) {
+        throw new Error("Failed to load DAIToken");
+      }
 
-  useEffect(() => {
-    setDaiTokenBalance(Number(fromWei(String(DAIToken))));
-    setDappTokenBalance(Number(fromWei(String(DappToken))));
-    setStakedBalance(Number(fromWei(String(staked))));
-  }, [DAIToken, DappToken, staked]);
+      if (!TokenFarm) {
+        throw new Error("Failed to load TokenFarm");
+      }
 
-  const onStakeDAI = async () => {};
+      await stakeTokens(DAIToken, TokenFarm, balances.DAIToken);
+    } catch (error) {
+      showError(error.message);
+    }
+  };
+
+  const onUnStakeDAI = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!DAIToken) {
+      throw new Error("Failed to load DAIToken");
+    }
+
+    if (!TokenFarm) {
+      throw new Error("Failed to load TokenFarm");
+    }
+    await unStakeTokens(DAIToken, TokenFarm, balances.staked);
+  };
 
   return (
     <Container className="box">
-      <div>
+      <form>
         <div className="field">
           <label className="label">Staked DAI</label>
           <div className="control has-icons-right">
             <input
               className="input transparent"
               type="text"
-              value={stakedBalance}
+              value={balances.staked}
               readOnly
             />
 
@@ -48,7 +68,7 @@ export const StakingBox: React.FC = observer(() => {
             <input
               className="input transparent"
               type="text"
-              value={dappTokenBalance}
+              value={balances.DappToken}
               readOnly
             />
 
@@ -63,14 +83,29 @@ export const StakingBox: React.FC = observer(() => {
           </div>
         </div>
 
-        <StakedTag className="tag">DAI Balance: {daiTokenBalance}</StakedTag>
+        <StakedTag className="tag">DAI Balance: {balances.DAIToken}</StakedTag>
 
-        <Button
-          label="Stake DAI"
-          className="is-medium is-fullwidth"
-          onClick={onStakeDAI}
-        />
-      </div>
+        {balances.DAIToken > 0 ? (
+          <Button
+            label="Stake DAI"
+            className="is-medium is-fullwidth"
+            onClick={onStakeDAI}
+          />
+        ) : (
+          <p className="small">Please get some DAI in your Metamask first...</p>
+        )}
+
+        {balances.staked > 0 && (
+          <>
+            <br />
+            <Button
+              label="UnStake DAI"
+              className="is-medium is-fullwidth"
+              onClick={onUnStakeDAI}
+            />
+          </>
+        )}
+      </form>
     </Container>
   );
 });
@@ -80,6 +115,11 @@ const Container = styled.div`
     background-color: transparent;
     border: none;
     color: white;
+  }
+
+  .small {
+    font-size: 0.8rem;
+    color: ${uiColors.gray};
   }
 `;
 
