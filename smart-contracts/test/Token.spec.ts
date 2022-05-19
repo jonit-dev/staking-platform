@@ -47,9 +47,7 @@ describe("Token.sol", function () {
   });
 
   it("should throw an insufficient balance error, if we try to transfer from an address without funds", async () => {
-    await expect(
-      token.connect(addr1).transfer(owner.address, 1000000)
-    ).to.be.revertedWith("Insufficient balance");
+    await expect(token.connect(addr1).transfer(owner.address, 1000000)).to.be.revertedWith("Insufficient balance");
   });
 
   it("should update balances after transfers", async () => {

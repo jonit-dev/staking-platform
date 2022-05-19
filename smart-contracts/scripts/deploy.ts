@@ -34,9 +34,7 @@ async function main() {
   const daiWei = utils.parseEther("100");
   await daiToken.transfer(accounts[1].address, daiWei);
 
-  console.log(
-    `Investor's balance: ${await daiToken.balanceOf(investor.address)}`
-  );
+  console.log(`Investor's balance: ${await daiToken.balanceOf(investor.address)}`);
 
   const abiOutputs: IABIOutput[] = [
     {
@@ -65,10 +63,7 @@ main().catch((error) => {
 
 function generateABI(abiOutputs: IABIOutput[]) {
   for (const output of abiOutputs) {
-    const artifactPath = path.resolve(
-      __dirname,
-      `../artifacts/contracts/${output.name}.sol/${output.name}.json`
-    );
+    const artifactPath = path.resolve(__dirname, `../artifacts/contracts/${output.name}.sol/${output.name}.json`);
 
     const artifact = fs.readFileSync(artifactPath);
 

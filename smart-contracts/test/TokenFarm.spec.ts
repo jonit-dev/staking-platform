@@ -65,9 +65,7 @@ describe("TokenFarm.sol", function () {
 
     await daiToken.connect(investor).approve(tokenFarm.address, ToToken("100"));
 
-    await expect(
-      tokenFarm.connect(investor).stakeTokens(ToToken("100"))
-    ).to.emit(tokenFarm, "StakeToken");
+    await expect(tokenFarm.connect(investor).stakeTokens(ToToken("100"))).to.emit(tokenFarm, "StakeToken");
 
     const balanceAfter = await daiToken.balanceOf(investor.address);
     expect(balanceAfter).to.equal(ToToken("0"));
@@ -87,9 +85,9 @@ describe("TokenFarm.sol", function () {
   it("avoid users from staking if amount is <= than 0", async () => {
     await daiToken.connect(investor).approve(tokenFarm.address, ToToken("100"));
 
-    await expect(
-      tokenFarm.connect(investor).stakeTokens(ToToken("0"))
-    ).to.be.revertedWith("Amount must be greater than 0");
+    await expect(tokenFarm.connect(investor).stakeTokens(ToToken("0"))).to.be.revertedWith(
+      "Amount must be greater than 0"
+    );
   });
 
   it("should have the owner as tokenFarmManager", async () => {
@@ -98,9 +96,7 @@ describe("TokenFarm.sol", function () {
   });
 
   it("should only trigger issueTokens() if msg.sender is the manager", async () => {
-    await expect(tokenFarm.connect(investor).issueTokens()).to.be.revertedWith(
-      "Ownable: caller is not the owner'"
-    );
+    await expect(tokenFarm.connect(investor).issueTokens()).to.be.revertedWith("Ownable: caller is not the owner'");
     // another way to do this: .should.be.rejected
   });
 
@@ -115,36 +111,29 @@ describe("TokenFarm.sol", function () {
   });
 
   it("should properly emit IssueToken event", async () => {
-    await expect(tokenFarm.connect(tokenFarmManager).issueTokens()).to.emit(
-      tokenFarm,
-      "IssueToken"
-    );
+    await expect(tokenFarm.connect(tokenFarmManager).issueTokens()).to.emit(tokenFarm, "IssueToken");
   });
 
   it("should get the staked tokens balance", async () => {
-    const stakedBalance = await tokenFarm
-      .connect(investor)
-      .getOwnStakedTokensBalance();
+    const stakedBalance = await tokenFarm.connect(investor).getOwnStakedTokensBalance();
 
     expect(stakedBalance).to.equal(ToToken("100"));
   });
 
   it("should revert transaction if unstake amount is zero", async () => {
-    await expect(
-      tokenFarm.connect(investor).unstakeTokens(ToToken("0"))
-    ).to.be.revertedWith("Amount must be greater than 0");
+    await expect(tokenFarm.connect(investor).unstakeTokens(ToToken("0"))).to.be.revertedWith(
+      "Amount must be greater than 0"
+    );
   });
 
   it("should revert transaction if account is not actually staking in the contract", async () => {
-    await expect(
-      tokenFarm.connect(another).unstakeTokens(ToToken("100"))
-    ).to.be.revertedWith("You have not staked any tokens");
+    await expect(tokenFarm.connect(another).unstakeTokens(ToToken("100"))).to.be.revertedWith(
+      "You have not staked any tokens"
+    );
   });
 
   it("should revert if trying to stake amount higher than staking balance", async () => {
-    await expect(
-      tokenFarm.connect(investor).unstakeTokens(ToToken("999"))
-    ).to.be.revertedWith(
+    await expect(tokenFarm.connect(investor).unstakeTokens(ToToken("999"))).to.be.revertedWith(
       "Your staking balance is lower than the requested amount"
     );
   });

@@ -35,8 +35,7 @@ const config: HardhatUserConfig = {
     // deploy to rinkeby tutorial: https://youtu.be/9Qpi80dQsGU?t=1272
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   gasReporter: {

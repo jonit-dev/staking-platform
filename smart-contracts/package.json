@@ -11,7 +11,8 @@
     "deploy:ganache": "yarn compile && npx hardhat run --network localhost scripts/deploy.ts",
     "console": "npx hardhat console",
     "console:ganache": "npx hardhat console --network localhost",
-    "check": "npx hardhat check"
+    "check": "npx hardhat check",
+    "format": "prettier --write . --loglevel silent"
   },
   "husky": {
     "hooks": {

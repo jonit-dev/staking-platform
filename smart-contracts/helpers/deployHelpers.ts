@@ -25,9 +25,7 @@ export async function deployContract<T>(
   await contract.deployed();
 
   if (showLogs) {
-    console.log(
-      `🚢 ${name} deployed at ${contract.address} on ${networkName}'s network, chainId ${chainId}`
-    );
+    console.log(`🚢 ${name} deployed at ${contract.address} on ${networkName}'s network, chainId ${chainId}`);
   }
 
   return contract as unknown as T;
@@ -38,14 +36,9 @@ interface IDeployedContractData {
   abi: string;
 }
 
-export const getDeployedContractData = (
-  contractName: string
-): IDeployedContractData => {
+export const getDeployedContractData = (contractName: string): IDeployedContractData => {
   const deployedContract = fs.readFileSync(
-    path.resolve(
-      __dirname,
-      `../artifacts/contracts/${contractName}.sol/${contractName}.json`
-    )
+    path.resolve(__dirname, `../artifacts/contracts/${contractName}.sol/${contractName}.json`)
   );
 
   const data = JSON.parse(deployedContract.toString());
